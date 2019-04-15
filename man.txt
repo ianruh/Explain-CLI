@@ -1,0 +1,18 @@
+explain [OPTIONS] [COMMAND]
+
+A cli for explainshell.com. Gives the parsed result on the command line. Of no command is specified, then it defaults to the clipboard.
+
+Options
+	-clip
+		Grabs the command from the clipboard.
+	-url
+		Displays the url
+	-web
+		Opens the explainshell.com page.
+
+Notes: If the command includes shell operators such as '|' or '&&', then you need to wrap it in quotes.
+
+		E.G. explain "cat example.txt | pbcopy"
+
+	The '-inspect' flag can be used as well to debug.
+
