@@ -1,4 +1,4 @@
-# Explain Shell CLI
+# Explain CLI
 
 A cli interface for [ExplainShell](<https://explainshell.com/>). Scrapes and parses the responses.
 
@@ -20,7 +20,7 @@ A cli interface for [ExplainShell](<https://explainshell.com/>). Scrapes and par
 *Requires pyinstall*
 
 ```
-cd ExplainShell/
+cd Explain-CLI/
 pyinstall --onefile explain.py
 ```
 
