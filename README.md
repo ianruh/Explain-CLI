@@ -60,6 +60,23 @@ $ ./explain "echo 'Hello World'"
                     └──────────────────────────────────────┘
 ```
 
+**No Quotes**
+
+```
+$ ./explain cat text.txt
+
+
+       cat(1)       ┌──────────────────────────────────────────────────┐
+                    │concatenate files and print on the standard output│
+                    └──────────────────────────────────────────────────┘
+      text.txt      ┌────────────────────────────────────────────────────────┐
+                    │Concatenate FILE(s), or standard input, to standard outp│
+                    │ut.With no FILE, or when FILE is -, read standard input.│
+                    └────────────────────────────────────────────────────────┘
+```
+
+
+
 **Unknown Commands**
 
 ```
