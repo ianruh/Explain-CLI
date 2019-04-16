@@ -100,3 +100,6 @@ $ ./explain "hellohoomans said dogo"
 Missing Man Page
 ```
 
+
+
+![](http://ian.ruh.io/explain.png)
