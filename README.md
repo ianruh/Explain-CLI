@@ -21,7 +21,7 @@ A cli interface for [ExplainShell](<https://explainshell.com/>). Scrapes and par
 
 ```
 cd Explain-CLI/
-pyinstall --onefile explain.py
+pyinstaller --onefile explain.py
 ```
 
 The executable should be in `./dist/`.
@@ -37,6 +37,7 @@ Options:
 - `-clip` : Gets the command from the clipboard.
 - `-url`: Prints the URL of the explainshell.com page as well.
 - `-web`: Opens the explainshell.com page in a browser.
+- `-v`: Include the command in the output.
 - `-inspect`: Launches a python shell for debugging.
 
 Other Notes:

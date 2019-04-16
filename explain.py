@@ -7,6 +7,29 @@ import sys
 import os
 import pyperclip
 import webbrowser
+import re
+import textwrap
+import math
+
+# Colors
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+    CYAN = '\033[36m'
+
+## Constants
+textMargin = 3          # Margin around text in the boxes
+pad = 20                # Padding of boxes from the left
+maxWidth = 150
+topBottomPad = True
+borderColor = bcolors.ENDC
+nameColor = bcolors.OKGREEN + bcolors.BOLD
 
 def simple_get(url):
     """
@@ -57,6 +80,7 @@ fromClip = False
 showUrl = False
 inspect = False
 browser = False
+includeCommand = False
 
 remove = []
 passedFirst = False
@@ -72,6 +96,8 @@ for arg in commandArr:
             inspect = True
         if flag == 'web':
             browser = True
+        if flag == 'v':
+            includeCommand = True
         remove.append(arg)
     else:
         passedFirst = True
@@ -92,7 +118,10 @@ raw_html = simple_get(url)
 
 if browser:
     webbrowser.open(url)
+    sys.exit()
 
+if includeCommand:
+    print('\nexplain "' + commandStr.strip() + '"')
 if showUrl:
     print('\nURL: ' + url)
 
@@ -100,47 +129,79 @@ html = BeautifulSoup(raw_html, 'html.parser')
 
 boxes = {}
 
+# The help Boxes
 for tag in html.findAll('pre', {"class":True}):
-    if 'help-box' in tag["class"]:
+    if any('help-box' in s for s in tag["class"]):
+        boxes[tag["id"]] = [tag.text.replace('\n', '')]
+    if any('shell' in s for s in tag["class"]):
         boxes[tag["id"]] = [tag.text.replace('\n', '')]
 
-
+# The top command layout
 for tag in html.findAll("span", {"class":True, "helpref":True}):
-    if 'command0' in tag["class"]:
+    if any('command' in s for s in tag["class"]):
+        boxes[tag["helpref"]].append(tag.text)
+    if any('shell' in s for s in tag["class"]):
         boxes[tag["helpref"]].append(tag.text)
 unknownCount = 0
 for tag in html.findAll("span", {"class":True}):
-    if 'unknown' in tag["class"]:
+    if any('unknown' in s for s in tag["class"]):
         boxes[unknownCount] = ["Unknown", tag.text]
         unknownCount += 1
 for tag in html.select('h4'):
     if 'missing man page' in tag.text:
-        print("Missing Man Page")
+        print(bcolors.FAIL + "Missing Man Page" + bcolors.ENDC)
         sys.exit()
 
 if inspect:
     import code; code.interact(local=dict(globals(), **locals()))
 
-def bordered(pad, text):
-    if text == None:
-        test = "Unknown"
+def bordered2(pad, text, command):
     rows, columns = os.popen('stty size', 'r').read().split()
-    effectiveCol = int(columns) - pad - 4
-    n = effectiveCol
-    text = '\n'.join([text[i:i+n] for i in range(0, len(text), n)])
-    lines = text.splitlines()
+    columns = int(columns)
+    columns = columns if columns < maxWidth else maxWidth
+
+    if text == None:
+        text = "Unknown"
+    text = re.sub('\s+', ' ', text).strip()
+
+    effectiveCol = columns - pad - 4 - (textMargin*2)
+    wrapper = textwrap.TextWrapper(width=effectiveCol)
+    lines = wrapper.wrap(text=text)
+
+    if topBottomPad:
+        lines.insert(0, "")
+        lines.append("")
+
+    leftSide = []
+    for i in range(0, len(lines)):
+        if i == 1:
+            lengthAct = len(command)
+            command = nameColor + command + bcolors.ENDC
+            leftPad = math.ceil(float(pad - lengthAct) / 2)
+            rightPad = math.floor(float(pad - lengthAct) / 2)
+            leftSide.append(" "*leftPad + command + " "*rightPad)
+        else:
+            leftSide.append(" " * pad)
+
     width = max(len(s) for s in lines)
-    res = ['┌' + '─' * width + '┐']
-    for s in lines:
-        res.append(' '*pad + '│' + (s.strip() + ' ' * width)[:width] + '│')
-    res.append(' '*pad + '└' + '─' * width + '┘')
+
+    pipe = color(borderColor, '|')
+    dash = color(borderColor, '─')
+    topleft = color(borderColor, '┌')
+    topright = color(borderColor, '┐')
+    bottomleft = color(borderColor, '└')
+    bottomright = color(borderColor, '┘')
+
+    res = [' '*pad +topleft + dash * (width + (textMargin*2)) + topright]
+    for left, right in zip(leftSide, lines):
+        res.append(left + pipe + ' '*(textMargin) + (right.strip() + ' ' * (width+textMargin))[:(width+textMargin)] + pipe)
+    res.append(' '*pad + bottomleft + dash * (width + (textMargin*2)) + bottomright)
     return '\n'.join(res)
 
-# import code; code.interact(local=dict(globals(), **locals()))
+def color(color, text):
+    return color+text+bcolors.ENDC
 
-print('\n')
+print()
 for box in boxes.keys():
-    pad = 20
-    print("{:^20}{}".format(boxes[box][1], bordered(pad, boxes[box][0])))
-
-print('\n')
+    print(bordered2(pad, boxes[box][0], boxes[box][1]))
+print()
