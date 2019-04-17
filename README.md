@@ -34,11 +34,10 @@ If no command is supplied, then it defaults to the clipboard.
 
 Options:
 
-- `-clip` : Gets the command from the clipboard.
+- `-c, --clipboard` : Gets the command from the clipboard.
 - `-url`: Prints the URL of the explainshell.com page as well.
-- `-web`: Opens the explainshell.com page in a browser.
-- `-v`: Include the command in the output.
-- `-inspect`: Launches a python shell for debugging.
+- `-b, --browser`: Opens the explainshell.com page in a browser.
+- `-echo`: Include the command in the output.
 
 Other Notes:
 
@@ -111,4 +110,4 @@ Missing Man Page
   - [ ] TextFormatter
 - [ ] Pip package
 - [ ] !! handling
-- [ ] 
+- [ ]
