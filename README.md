@@ -103,3 +103,12 @@ Missing Man Page
 
 
 ![](http://ian.ruh.io/explain.png)
+
+### ToDo
+
+- [ ] Refactor Code
+  - [ ] ArgParse
+  - [ ] TextFormatter
+- [ ] Pip package
+- [ ] !! handling
+- [ ] 

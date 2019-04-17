@@ -1,27 +1,5 @@
-from requests import get
-from requests.exceptions import RequestException
-from contextlib import closing
-from bs4 import BeautifulSoup
-import urllib.parse
-import sys
-import os
-import pyperclip
-import webbrowser
-import re
-import textwrap
-import math
-
-# Colors
-class bcolors:
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
-    CYAN = '\033[36m'
+import sys, os, pyperclip, webbrowser, re, textwrap, math, scrape_utils
+import urllib.parse, bcolors
 
 ## Constants
 textMargin = 3          # Margin around text in the boxes
@@ -30,42 +8,6 @@ maxWidth = 150
 topBottomPad = True
 borderColor = bcolors.ENDC
 nameColor = bcolors.OKGREEN + bcolors.BOLD
-
-def simple_get(url):
-    """
-    Attempts to get the content at `url` by making an HTTP GET request.
-    If the content-type of response is some kind of HTML/XML, return the
-    text content, otherwise return None.
-    """
-    try:
-        with closing(get(url, stream=True)) as resp:
-            if is_good_response(resp):
-                return resp.content
-            else:
-                return None
-
-    except RequestException as e:
-        log_error('Error during requests to {0} : {1}'.format(url, str(e)))
-        return None
-
-
-def is_good_response(resp):
-    """
-    Returns True if the response seems to be HTML, False otherwise.
-    """
-    content_type = resp.headers['Content-Type'].lower()
-    return (resp.status_code == 200
-            and content_type is not None
-            and content_type.find('html') > -1)
-
-
-def log_error(e):
-    """
-    It is always a good idea to log errors.
-    This function just prints them, but you can
-    make it do anything.
-    """
-    print(e)
 
 def makeURL(command):
     baseurl = "https://explainshell.com/explain?cmd="
@@ -114,7 +56,7 @@ if(fromClip or len(commandArr) == 0):
 
 
 url = makeURL(commandStr.strip())
-raw_html = simple_get(url)
+html = scrape_utils.simple_get(url)
 
 if browser:
     webbrowser.open(url)
@@ -124,8 +66,6 @@ if includeCommand:
     print('\nexplain "' + commandStr.strip() + '"')
 if showUrl:
     print('\nURL: ' + url)
-
-html = BeautifulSoup(raw_html, 'html.parser')
 
 boxes = {}
 
