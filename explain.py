@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import sys, os, pyperclip, webbrowser, scrape_utils
 import urllib.parse, bcolors, argparse, textbox
 
