@@ -2,33 +2,18 @@
 
 A cli interface for [ExplainShell](<https://explainshell.com/>). Scrapes and parses the responses.
 
-***Disclaimer***: *I have only tested it on MacOS 10.14.3, and by tested, I mean it works in my environment. There is probably more setup requried than I've described.*
-
 ### Installation
 
-**Dependencies**: (I don't know, there might be more)
+**Dependencies**:
 
-- python
+- Python3
 - requests
 - beutifulsoup4
 - pyperclip
 
-
-
-**Building**
-
-*Requires pyinstall*
-
-```
-cd Explain-CLI/
-pyinstaller --onefile explain.py
-```
-
-The executable should be in `./dist/`.
-
 ### Usage
 
-Basic usage: `explain [OPTIONS] [COMMAND]`
+Basic usage: `./explain.py [OPTIONS] [COMMAND]`
 
 If no command is supplied, then it defaults to the clipboard.
 
@@ -99,10 +84,6 @@ $ ./explain "hellohoomans said dogo"
 Missing Man Page
 ```
 
-
-
-![](http://ian.ruh.io/explain.png)
-
 ### ToDo
 
 - [ ] Refactor Code
@@ -110,4 +91,3 @@ Missing Man Page
   - [ ] TextFormatter
 - [ ] Pip package
 - [ ] !! handling
-- [ ]
